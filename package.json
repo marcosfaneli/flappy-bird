@@ -2,7 +2,7 @@
   "name": "flappy-bird",
   "version": "0.0.1",
   "description": "Writting games using javascript",
-  "main": "engine.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -18,5 +18,11 @@
   "bugs": {
     "url": "https://github.com/marcosfaneli/flappy-bird/issues"
   },
-  "homepage": "https://github.com/marcosfaneli/flappy-bird#readme"
+  "homepage": "https://github.com/marcosfaneli/flappy-bird#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "engines": {
+    "node": "10.x"
+  }
 }
