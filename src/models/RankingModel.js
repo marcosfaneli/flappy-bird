@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 // Define collection and schema for Business
-let Ranking = new Schema({
+var Ranking = new Schema({
   email: {
     type: String
   },
