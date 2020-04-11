@@ -156,7 +156,7 @@ function main() {
     carregarRanking();
 
     img = new Image();
-    img.src = "jogo.png";
+    img.src = "./img/jogo.png";
 
     roda();
 }

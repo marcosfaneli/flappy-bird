@@ -1,0 +1,10 @@
+canvas {
+  display: block;  
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
+  margin: 0 auto;
+  border: 1px ridge red;  
+}
