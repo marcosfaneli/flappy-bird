@@ -1,9 +1,29 @@
-// import axios from './axios.js';
+function Sprite(x,y,largura,altura){
+    this.x = x;
+    this.y = y;
+    this.altura = altura;
+    this.largura = largura;
 
-// console.log('foi');
+    this.desenha = function(xCanvas, yCanvas){
+        ctx.drawImage(
+            img,
+            this.x,
+            this.y,
+            this.largura,
+            this.altura,
+            xCanvas,
+            yCanvas,
+            this.largura,
+            this.altura
+        );
+    }
+}
+
+var boneco = new Sprite(0,0,80,80);
 
 let canvas;
 let ctx;
+let img;
 const velocidade = 6;
 
 let frames = 0;
@@ -36,8 +56,8 @@ chao = {
 const bloco = {
     x: 50,
     y: 0,
-    altura: 50,
-    largura: 50,
+    altura: boneco.altura,
+    largura: boneco.largura,
     cor: "#610B0B",
     gravidade: 1.6,
     velocidade: 0,
@@ -66,8 +86,9 @@ const bloco = {
         this.score = 0;
     },
     desenha: function () {
-        ctx.fillStyle = this.cor;
-        ctx.fillRect(this.x, this.y, this.largura, this.altura);
+        // ctx.fillStyle = this.cor;
+        // ctx.fillRect(this.x, this.y, this.largura, this.altura);
+        boneco.desenha(this.x, this.y);
     }
 };
 
@@ -134,15 +155,18 @@ function main() {
 
     carregarRanking();
 
+    img = new Image();
+    img.src = "jogo.png";
+
     roda();
 }
 
 async function carregarRanking() {
     // const url = `http://localhost:5000/ranking/`;
-    // await axios.get(url)
-    //                 .then((res)=>{
-    //                     console.log(res);
-    //                 });
+    // const ranking =  await fetch(url)
+    //                         .then((res)=>{
+    //                             console.log(res);
+    //                         });
 
     recorde = localStorage.getItem("recorde");
     if (!recorde) {
