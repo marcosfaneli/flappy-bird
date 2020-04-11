@@ -7,7 +7,7 @@ const rankingRoutes = require('./ranking.route');
 
 const app = express()
 
-const uri = "mongodb+srv://faneli:<pass>@cluster0-mpje9.gcp.mongodb.net/test?retryWrites=true&w=majority";
+const uri = "mongodb+srv://faneli:nalcac17@cluster0-mpje9.gcp.mongodb.net/test?retryWrites=true&w=majority";
 
 mongoose.Promise = global.Promise;
 

@@ -1,8 +1,12 @@
+// import axios from './axios.js';
+
+// console.log('foi');
+
 let canvas;
 let ctx;
+const velocidade = 6;
 
 let frames = 0;
-const velocidade = 6;
 let recorde;
 
 const estados = {
@@ -19,7 +23,7 @@ const LARGURA = window.innerWidth - 10;
 
 const maximoPulos = 3;
 
-const chao = {
+chao = {
     y: ALTURA - 50,
     altura: 50,
     cor: "#FE9A2E",
@@ -133,7 +137,13 @@ function main() {
     roda();
 }
 
-function carregarRanking() {
+async function carregarRanking() {
+    // const url = `http://localhost:5000/ranking/`;
+    // await axios.get(url)
+    //                 .then((res)=>{
+    //                     console.log(res);
+    //                 });
+
     recorde = localStorage.getItem("recorde");
     if (!recorde) {
         recorde = 0;

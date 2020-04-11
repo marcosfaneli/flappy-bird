@@ -6,7 +6,8 @@ let Ranking = require('./ranking.model');
 
 // Defined get data(index or listing) route
 rankingRoutes.route('/').get(function (req, res) {
-    Ranking.find(function(err, rankings){
+    const query = Ranking.find().limit(10);
+    query.exec(function(err, rankings){
     if(err){
       console.log(err);
     }
@@ -17,8 +18,8 @@ rankingRoutes.route('/').get(function (req, res) {
 });
 
 //  Defined update route
-rankingRoutes.route('/:email').post(function (req, res) {
-    const query = Ranking.find({email: req.params.email});
+rankingRoutes.route('/').post(function (req, res) {
+    const query = Ranking.find({email: req.body.email});
     query.exec(function (err, docs) {
         if(docs.length == 0){
             let ranking = new Ranking(req.body);
