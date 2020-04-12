@@ -1,30 +1,8 @@
-function Sprite(x, y, largura, altura) {
-    this.x = x;
-    this.y = y;
-    this.altura = altura;
-    this.largura = largura;
-
-    this.desenha = function (xCanvas, yCanvas) {
-        ctx.drawImage(
-            img,
-            this.x,
-            this.y,
-            this.largura,
-            this.altura,
-            xCanvas,
-            yCanvas,
-            this.largura,
-            this.altura
-        );
-    }
-}
-
-const play = new Sprite(0, 160, 275, 275);
-
 let canvas;
 let ctx;
-let img;
+let imgPlay;
 const velocidade = 6;
+let play;
 
 let frames = 0;
 
@@ -66,9 +44,7 @@ function main() {
     estadoAtual = estados.parado;
 
     ranking.carrega();
-
-    img = new Image();
-    img.src = "./img/jogo.png";
+    imgPlay = openImage("./img/jogo.png");
 
     roda();
 }
@@ -161,6 +137,8 @@ function exibirTelaInicial() {
     ctx.fillStyle = "#fff";
     ctx.font = "bold 32px consolas";
     ctx.fillText("Clique para começar", x + 10, y + 34);
+    
+    play = new Sprite(imgPlay, 0, 160, 275, 275);    
 
     play.desenha(x + 38, y + 42);
 }
