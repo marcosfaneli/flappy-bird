@@ -1,10 +1,10 @@
-function Sprite(x,y,largura,altura){
+function Sprite(x, y, largura, altura) {
     this.x = x;
     this.y = y;
     this.altura = altura;
     this.largura = largura;
 
-    this.desenha = function(xCanvas, yCanvas){
+    this.desenha = function (xCanvas, yCanvas) {
         ctx.drawImage(
             img,
             this.x,
@@ -19,52 +19,29 @@ function Sprite(x,y,largura,altura){
     }
 }
 
-var boneco = new Sprite(0,0,80,80);
+const play = new Sprite(0, 160, 275, 275);
 
-let canvas;
-let ctx;
-let img;
-const velocidade = 6;
+function Personagem(){
+    
+    this.bonecoParado = new Sprite(160, 0, 80, 80);
+    this.bonecoDireito = new Sprite(0, 0, 80, 80);
+    this.bonecoEsquerdo = new Sprite(80, 0, 80, 80);
 
-let frames = 0;
-let recorde;
+    this.boneco = this.bonecoDireito;
 
-const estados = {
-    parado: 0,
-    jogando: 1,
-    perdeu: 2,
-};
+    this.x = 50;
+    this.y = 0;
+    this.altura = this.bonecoDireito.altura;
+    this.largura = this.bonecoDireito.largura;
+    this.cor = "#610B0B";
+    this.gravidade = 1.6;
+    this.velocidade = 0;
+    this.forcaDoPulo = 23.6;
+    this.quantidadePulos = 0;
+    this.score = 0;
+    this.v = 0;
 
-
-let estadoAtual = estados.parado;
-
-const ALTURA = window.innerHeight - 10;
-const LARGURA = window.innerWidth - 10;
-
-const maximoPulos = 3;
-
-chao = {
-    y: ALTURA - 50,
-    altura: 50,
-    cor: "#FE9A2E",
-    desenha: function () {
-        ctx.fillStyle = this.cor;
-        ctx.fillRect(0, this.y, LARGURA, this.altura);
-    }
-};
-
-const bloco = {
-    x: 50,
-    y: 0,
-    altura: boneco.altura,
-    largura: boneco.largura,
-    cor: "#610B0B",
-    gravidade: 1.6,
-    velocidade: 0,
-    forcaDoPulo: 23.6,
-    quantidadePulos: 0,
-    score: 0,
-    atualiza: function () {
+    this.atualiza = function() {
         this.velocidade += this.gravidade;
         this.y += this.velocidade;
 
@@ -73,39 +50,60 @@ const bloco = {
             this.quantidadePulos = 0;
             this.velocidade = 0;
         }
-    },
-    pula: function () {
+    }
+
+    this.pula = function() {
         if (this.quantidadePulos < maximoPulos) {
             this.velocidade = -this.forcaDoPulo;
             this.quantidadePulos++;
         }
-    },
-    reset: function () {
+    }
+
+    this.reset = function() {
         this.y = 0;
         this.velocidade = 0;
         this.score = 0;
-    },
-    desenha: function () {
-        // ctx.fillStyle = this.cor;
-        // ctx.fillRect(this.x, this.y, this.largura, this.altura);
-        boneco.desenha(this.x, this.y);
     }
-};
 
-const obstaculo = {
-    _obs: [],
-    _cores: ["#084B8A", "#0101DF", "#2A0A29", "#4B088A", "#0A0A2A"],
-    tempoInsere: 100,
-    insere: function () {
+    this.desenha = function (){
+        if (estadoAtual == estados.parado){
+            this.boneco = this.bonecoParado;
+        } else {
+            if (frames % 10 == 0){
+                this.v = this.v == 0 ? 1 : 0;
+            }
+
+            this.boneco = this.v == 0 ? this.bonecoDireito : this.bonecoEsquerdo;
+        } 
+        
+        this.boneco.desenha(this.x, this.y);
+    }
+}
+
+function Obstaculo(){
+    this._obs = [];
+    this._cores = function(){
+        var hexadecimais = '0123456789ABCDEF';
+        var cor = '#';
+    
+        for (var i = 0; i < 6; i++) {
+            cor += hexadecimais[Math.floor(Math.random() * 16)];
+        }
+        return cor;
+    }
+
+    this.tempoInsere = 100;
+    this.insere = function () {
         this._obs.push({
             x: LARGURA,
             largura: 30 + Math.floor(80 * Math.random()),
             altura: 30 + Math.floor(120 * Math.random()),
-            cor: this._cores[Math.floor(5 * Math.random())],
+            cor: this._cores()//[Math.floor(5 * Math.random())],
         });
         this.tempoInsere = 80 + Math.floor(60 * Math.random());
-    },
-    atualiza: function () {
+    }
+
+    this.atualiza = function () {
         if (this.tempoInsere == 0) {
             this.insere()
         } else {
@@ -126,18 +124,109 @@ const obstaculo = {
                 i--;
             }
         }
-    },
-    limpa: function () {
+    }
+
+    this.limpa = function () {
         this._obs = [];
-    },
-    desenha: function () {
+    }
+
+    this.desenha = function () {
         for (var i = 0, tamanho = this._obs.length; i < tamanho; i++) {
             var obs = this._obs[i];
             ctx.fillStyle = obs.cor;
             ctx.fillRect(obs.x, chao.y - obs.altura, obs.largura, obs.altura);
         }
     }
+}
+
+function Ranking(){
+
+    this.recorde = 0;
+    this.scores = [
+        {email: "paolasbasso@gmail.com", score: 100},
+        {email: "marcosfaneli@gmail.com", score: 98},
+        {email: "eduardofaneli2@gmail.com", score: 77},
+        {email: "nidalee@gmail.com", score: 3},
+        {email: "hannah@gmail.com", score: 1},
+    ]
+    
+    this.carrega = function () {
+        this.recorde = localStorage.getItem("recorde");
+        if (!this.recorde) {
+            this.recorde = 0;
+        }
+        console.log(this.recorde);
+    }
+
+    this.atualiza = function(personagem) {
+        if (personagem.score > this.recorde) {
+            localStorage.setItem("recorde", personagem.score);
+        }
+    }
+
+    this.desenha = function(){
+        ctx.fillStyle = "#A020F0";
+        ctx.fillRect(LARGURA - 320, 20, 300, 180);
+
+        ctx.fillStyle = "#FDF5E6";
+        ctx.fillRect(LARGURA - 314, 62, 288, 130);
+        
+        ctx.fillStyle = "#000";
+        ctx.font = "bold 32px Arial";
+        ctx.fillText("Ranking", LARGURA - 308, 52);
+
+        ctx.fillStyle = "#DEDBDA";
+        ctx.font = "bold 32px Arial";
+        ctx.fillText("Ranking", LARGURA - 310, 50);
+
+        ctx.fillStyle = "#000";
+        ctx.font = "14px consolas";
+        let posicao = 1;
+        this.scores.forEach(score => {
+            ctx.fillText(`${posicao} ${score.email.padEnd(28," ")} ${score.score.toString().padStart(5," ")}`, LARGURA - 310, (posicao * 22) + 64);
+            posicao++;
+        });
+    }
+}
+
+function Chao(){
+    this.y = ALTURA - 50;
+    this.altura = 50;
+    this.cor = "#FE9A2E";
+    this.desenha = function () {
+        ctx.fillStyle = this.cor;
+        ctx.fillRect(0, this.y, LARGURA, this.altura);
+    }
+}
+
+let canvas;
+let ctx;
+let img;
+const velocidade = 6;
+
+let frames = 0;
+
+const estados = {
+    parado: 0,
+    jogando: 1,
+    perdeu: 2,
 };
+
+
+let estadoAtual = estados.parado;
+
+const ALTURA = window.innerHeight - 10;
+const LARGURA = window.innerWidth - 10;
+
+const maximoPulos = 3;
+
+const chao = new Chao();
+
+const bloco = new Personagem();
+
+const obstaculo = new Obstaculo();
+
+const ranking = new Ranking();
 
 function main() {
 
@@ -150,10 +239,11 @@ function main() {
     document.body.appendChild(canvas);
 
     document.addEventListener("mousedown", clique);
+    document.addEventListener("keydown", keyboard);
 
     estadoAtual = estados.parado;
 
-    carregarRanking();
+    ranking.carrega();
 
     img = new Image();
     img.src = "./img/jogo.png";
@@ -161,42 +251,29 @@ function main() {
     roda();
 }
 
-async function carregarRanking() {
-    // const url = `http://localhost:5000/ranking/`;
-    // const ranking =  await fetch(url)
-    //                         .then((res)=>{
-    //                             console.log(res);
-    //                         });
-
-    recorde = localStorage.getItem("recorde");
-    if (!recorde) {
-        recorde = 0;
-    }
-
-    console.log(recorde);
-}
-
-function atualizaRanking() {
-    if (bloco.score > recorde) {
-        localStorage.setItem("recorde", bloco.score);
-    }
-}
-
 function iniciarJogo() {
     estadoAtual = estados.jogando;
-    carregarRanking();
+    ranking.carrega();
 }
 
 function clique(event) {
-    if (estadoAtual == estados.jogando) {
-        bloco.pula();
-    } else if (estadoAtual == estados.parado) {
+    if (estadoAtual == estados.parado) {
         iniciarJogo();
     } else if (estadoAtual == estados.perdeu && bloco.y >= 2 * ALTURA) {
         estadoAtual = estados.jogando;
         obstaculo.limpa();
         bloco.reset();
     }
+}
+
+function keyboard(event) {
+    if (event.keyCode != 32){
+        return;
+    }
+    
+    if (estadoAtual == estados.jogando) {
+        bloco.pula();
+    } 
 }
 
 function roda() {
@@ -216,28 +293,54 @@ function atualiza() {
 }
 
 function exibirFimDeJogo() {
+    const x = LARGURA / 2 - 140;
+    const y = ALTURA / 2 - 140;
 
-    ctx.fillStyle = "red";
-    ctx.fillRect(LARGURA / 2 - 50, ALTURA / 2 - 50, 100, 100);
+    ctx.fillStyle = "#DC143C";
+    ctx.fillRect(x + 8, y + 8, 354, 340);
+    ctx.fillStyle = "#B22222";
+    ctx.fillRect(x, y, 354, 340);
 
-    ctx.save();
-    ctx.translate(LARGURA / 2, ALTURA / 2);
     ctx.fillStyle = "#fff";
-    let t = bloco.score.toString().length;
-    ctx.fillText(bloco.score, t * -13, 19);
+    ctx.font = "bold 72px consolas";
+    ctx.fillText("GAME", x + 36, y + 84);
 
-    if (bloco.score > recorde) {
-        ctx.fillText("Novo Recorde!!", -154, -65);
+    ctx.fillStyle = "#fff";
+    ctx.font = "bold 72px consolas";
+    ctx.fillText("OVER", x + 104, y + 140);
+
+    ctx.fillStyle = "#fff";
+    ctx.font = "bold 140px consolas";
+    // let t = bloco.score.toString().length;
+    ctx.fillText(bloco.score, x + 140, y + 260);
+
+    if (bloco.score > ranking.recorde) {
+        ctx.fillStyle = "#FFD700";
+        ctx.font = "bold 36px consolas";
+        ctx.fillText("Novo Recorde!!", x + 46, y + 320);
     }
 
-    atualizaRanking();
-
-    ctx.restore();
+    ranking.atualiza(bloco);
 }
 
 function exibirTelaInicial() {
-    ctx.fillStyle = "green";
-    ctx.fillRect(LARGURA / 2 - 50, ALTURA / 2 - 50, 100, 100);
+    const x = LARGURA / 2 - 140;
+    const y = ALTURA / 2 - 140;
+
+    ctx.fillStyle = "#4B0082";
+    ctx.fillRect(x + 8, y + 8, 354, 340);
+    ctx.fillStyle = "#8A2BE2";
+    ctx.fillRect(x, y, 354, 340);
+    
+    ctx.fillStyle = "#000";
+    ctx.font = "bold 32px consolas";
+    ctx.fillText("Clique para começar", x + 12, y + 36);
+    
+    ctx.fillStyle = "#fff";
+    ctx.font = "bold 32px consolas";
+    ctx.fillText("Clique para começar", x + 10, y + 34);
+
+    play.desenha(x + 38, y + 42);
 }
 
 function desenha() {
@@ -259,4 +362,5 @@ function desenha() {
 
     chao.desenha();
     bloco.desenha();
+    ranking.desenha();
 }
