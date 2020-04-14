@@ -6,12 +6,13 @@ let play;
 
 let frames = 0;
 
+var bloqueado = false;
+
 const estados = {
     parado: 0,
     jogando: 1,
     perdeu: 2,
 };
-
 
 let estadoAtual = estados.parado;
 
@@ -28,7 +29,7 @@ const obstaculo = new Obstaculo();
 
 const ranking = new Ranking();
 
-function main() {
+async function main() {
 
     canvas = document.createElement("canvas");
     canvas.width = LARGURA;
@@ -43,19 +44,23 @@ function main() {
 
     estadoAtual = estados.parado;
 
-    ranking.carrega();
+    await ranking.carrega();
     imgPlay = openImage("./img/jogo.png");
 
     roda();
 }
 
-function iniciarJogo() {
+async function iniciarJogo() {
     estadoAtual = estados.jogando;
-    ranking.carrega();
+    await ranking.carrega();
 } 
 
 function clique(event) {
-    if (estadoAtual == estados.parado) {
+    if(bloqueado){
+        return;
+    }
+
+    if (estadoAtual == estados.parado && !bloqueado) {
         iniciarJogo();
     } else if (estadoAtual == estados.perdeu && bloco.y >= 2 * ALTURA) {
         estadoAtual = estados.jogando;
@@ -112,13 +117,16 @@ function exibirFimDeJogo() {
     // let t = bloco.score.toString().length;
     ctx.fillText(bloco.score, x + 140, y + 260);
 
-    if (bloco.score > ranking.recorde) {
+    if (bloco.score > ranking.getRecorde()) {
         ctx.fillStyle = "#FFD700";
         ctx.font = "bold 36px consolas";
         ctx.fillText("Novo Recorde!!", x + 46, y + 320);
-    }
+    
+        document.getElementById('form-recorde').style.display = "block";
+        document.getElementById('score').value = bloco.score;
 
-    ranking.atualiza(bloco);
+        bloqueado = true;
+    }
 }
 
 function exibirTelaInicial() {
@@ -163,4 +171,18 @@ function desenha() {
     chao.desenha();
     bloco.desenha();
     ranking.desenha();
+}
+
+function salvarRecorde(){
+    const email = document.getElementById("emailInput").value;
+    const score = document.getElementById("score").value;
+
+    ranking.atualiza(email, score);
+
+    fecharForm()
+}
+
+function fecharForm(){
+    document.getElementById('form-recorde').style.display = "none";
+    bloqueado = false;
 }

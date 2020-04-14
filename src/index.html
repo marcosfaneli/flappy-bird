@@ -3,11 +3,12 @@
 
 <head>
     <title>Jogo</title>
-
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="styles.css" />
 </head>
 
 <body>
+        
     <script src="https://npmcdn.com/axios/dist/axios.min.js"></script>
     <script src="./game/services/api.js"></script>
     <script src="./game/utils/openImage.js"></script>
@@ -18,10 +19,22 @@
     <script src="./game/elements/ranking.js"></script>
     <script src="./game/sprite.js"></script>
     <script src="./game/engine.js"></script>
-        
     <script>
         main();
     </script>
+    <div id="form-recorde" class="form-recorde">
+        <form>
+            <input type="hidden" id="score">
+            <div class="form-group">
+                <label for="emailInput">Você conquistou um novo recorde. Informe seu e-mail.</label>
+                <input type="email" class="form-control" id="emailInput" aria-describedby="emailHelp" placeholder="Enter email">
+            </div>
+            <div>
+                <button type="button" class="btn btn-primary" onclick="salvarRecorde()">Salvar</button>
+                <button type="button" class="btn btn-danger" onclick="fecharForm()">Cancelar</button>
+            </div>
+        </form>
+    </div>
 </body>
 
 </html>

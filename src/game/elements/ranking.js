@@ -1,32 +1,27 @@
 function Ranking() {
-  this.recorde = 0;
-  this.scores =
-    [
-      { email: "paolasbasso@gmail.com", score: 100 },
-      { email: "marcosfaneli@gmail.com", score: 98 },
-      { email: "eduardofaneli2@gmail.com", score: 77 },
-      { email: "nidalee@gmail.com", score: 3 },
-      { email: "hannah@gmail.com", score: 1 },
-    ]
+  let recorde = 0;
+  let scores = [];
 }
 
-Ranking.prototype.loadRanking = async () => {
+Ranking.prototype.carrega = async () => {
   let response = await Api().get('/ranking');
-  return response.data;
+  scores = await response.data;
+
+  recorde = scores[0].score;
 }
 
-Ranking.prototype.carrega = function () {
-  this.recorde = localStorage.getItem("recorde");
-  if (!this.recorde) {
-    this.recorde = 0;
+Ranking.prototype.atualiza = async (email, score) => {
+  if (score > recorde) {
+    const json = {'email': email, 'score': score};
+  
+    await Api().post('/ranking', json);
+
+    location.reload();
   }
-  console.log(this.recorde);
 }
 
-Ranking.prototype.atualiza = function (personagem) {
-  if (personagem.score > this.recorde) {
-    localStorage.setItem("recorde", personagem.score);
-  }
+Ranking.prototype.getRecorde = () => {
+  return recorde;
 }
 
 Ranking.prototype.desenha = function () {
@@ -47,8 +42,8 @@ Ranking.prototype.desenha = function () {
   ctx.fillStyle = "#000";
   ctx.font = "14px consolas";
   let posicao = 1;
-  // console.log(this.scores);
-  this.scores.forEach(score => {
+
+  scores.forEach(score => {
     ctx.fillText(`${posicao} ${score.email.padEnd(28, " ")} ${score.score.toString().padStart(5, " ")}`, LARGURA - 310, (posicao * 22) + 64);
     posicao++;
   });

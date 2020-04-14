@@ -3,7 +3,7 @@ const Ranking = require('../models/RankingModel');
 module.exports = {
   async index(request, response) {
     try {
-      var query = await Ranking.find().limit(10).exec();
+      var query = await Ranking.find().sort({score:'desc'}).limit(5).exec();
 
       return response.json(query);
 

@@ -7,7 +7,7 @@ var Ranking = new Schema({
     type: String
   },
   score: {
-    type: String
+    type: Number
   },
 },{
     collection: 'ranking'
