@@ -4,6 +4,9 @@ const cors = require('cors');
 const routes = require('./routes');
 const mongoose = require('./database/connection');
 const { errors } = require('celebrate');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 const app = express()
 
