@@ -50,9 +50,13 @@ async function main() {
     roda();
 }
 
+function carregarRanking(){
+    ranking.carrega();
+}
+
 async function iniciarJogo() {
     estadoAtual = estados.jogando;
-    await ranking.carrega();
+    await carregarRanking();
 } 
 
 function clique(event) {

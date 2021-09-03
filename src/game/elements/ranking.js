@@ -7,7 +7,7 @@ Ranking.prototype.carrega = async () => {
   let response = await Api().get('/ranking');
   scores = await response.data;
 
-  recorde = scores[0].score;
+  recorde = scores.length > 0 ? scores[0].score : 0;
 }
 
 Ranking.prototype.atualiza = async (email, score) => {
